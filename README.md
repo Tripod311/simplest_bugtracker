@@ -16,7 +16,8 @@ This project is my vision of very simple bugtracker/taskmanager. It works well f
     "key": "path-to-key",
     "ca": "path-to-ca"
   }
-}```
+}
+```
 
 In case you don't want to use https, just remove `certificates` field.
 
