@@ -13,22 +13,21 @@ export default {
 				description: '',
 				tags: '',
 				state: 0
-			},
-			error: ``
+			}
 		}
 	},
 	methods: {
 		loadTask() {
 			this.loaded = false;
 			const id = this.$route.params.id;
-			fetch(`/api/tasks?id=${id}`)
+			fetch(`/api/tasks/${id}`)
 				.then(res => res.json())
 				.then(data => {
 					if (!data.error) {
-						this.task = data.tasks[0];
+						this.task = data.task;
 						this.loaded = true;
 					} else {
-
+						this.loaded = true;
 					}
 				})
 				.catch(() => {

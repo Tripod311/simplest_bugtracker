@@ -26,11 +26,11 @@ class Application {
 		this.app.put("/api/users/:id", this.checkAuthorized.bind(this), this.setPassword.bind(this));
 		this.app.delete("/api/users/:id", this.checkAuthorized.bind(this), this.deleteUser.bind(this));
 
+		this.app.get("/api/tasks/:id", this.checkAuthorized.bind(this), this.fetchTask.bind(this));
 		this.app.get("/api/tasks", this.checkAuthorized.bind(this), this.getTasks.bind(this));
 		this.app.post("/api/tasks", this.checkAuthorized.bind(this), this.createTask.bind(this));
 		this.app.put("/api/tasks/:id", this.checkAuthorized.bind(this), this.updateTask.bind(this));
 		this.app.delete("/api/tasks/:id", this.checkAuthorized.bind(this), this.deleteTask.bind(this));
-		this.app.get("/api/task/:id", this.checkAuthorized.bind(this), this.fetchTask.bind(this));
 
 		this.app.use(express.static(path.resolve(__dirname, "../client/dist/")));
 		this.app.use((req, res, next) => {

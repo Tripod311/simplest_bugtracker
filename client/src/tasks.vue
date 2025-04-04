@@ -131,29 +131,30 @@ export default {
 				</button>
 			</div>
 
+			<!-- Фильтры -->
+			<div class="flex flex-col md:flex-row md:items-end gap-4 mb-4">
+				<div>
+					<label class="block text-sm text-gray-600 mb-1">Статус</label>
+					<select v-model="filterState" @change="applyFilters" class="w-full px-3 py-2 border rounded">
+						<option value="">Все</option>
+						<option value="0">Создана</option>
+						<option value="1">В процессе</option>
+						<option value="2">Завершена</option>
+					</select>
+				</div>
+
+				<div>
+					<label class="block text-sm text-gray-600 mb-1">Тег</label>
+					<input v-model="filterTag" @input="applyFilters" type="text" class="w-full px-3 py-2 border rounded" placeholder="поиск по тегу..." />
+				</div>
+			</div>
+
 			<!-- Нет задач -->
 			<div v-if="tasks.length === 0" class="text-gray-500 text-center mt-10">
 				Задачи не найдены
 			</div>
 
 			<div v-else>
-				<!-- Фильтры -->
-				<div class="flex flex-col md:flex-row md:items-end gap-4 mb-4">
-					<div>
-						<label class="block text-sm text-gray-600 mb-1">Статус</label>
-						<select v-model="filterState" @change="applyFilters" class="w-full px-3 py-2 border rounded">
-							<option value="">Все</option>
-							<option value="0">Создана</option>
-							<option value="1">В процессе</option>
-							<option value="2">Завершена</option>
-						</select>
-					</div>
-
-					<div>
-						<label class="block text-sm text-gray-600 mb-1">Тег</label>
-						<input v-model="filterTag" @input="applyFilters" type="text" class="w-full px-3 py-2 border rounded" placeholder="поиск по тегу..." />
-					</div>
-				</div>
 
 				<!-- Список задач -->
 				<div class="grid gap-4">

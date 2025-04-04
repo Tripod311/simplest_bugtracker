@@ -198,8 +198,11 @@ class DB {
 		});
 	}
 
-	fetchTask (id) {
+	fetchTask(id) {
 		return new Promise((resolve, reject) => {
+			const converted = id.replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, '$1-$2-$3-$4-$5');
+			const binaryId = Buffer.from(uuid.parse(converted)); // ← преобразуем строку UUID в Buffer(16)
+
 			this.sqlite.get(
 				`SELECT 
 					tasks.id AS id,
@@ -210,8 +213,9 @@ class DB {
 					tasks.created_by AS created_by,
 					users.name AS creator_name
 				FROM tasks
-				LEFT JOIN users ON tasks.created_by = users.id WHERE tasks.id=?`,
-				[id],
+				LEFT JOIN users ON tasks.created_by = users.id
+				WHERE tasks.id = ?`,
+				[binaryId],
 				(err, row) => {
 					if (err) return reject(err);
 					if (!row) return reject("Task not found");
