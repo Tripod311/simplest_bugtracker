@@ -44,7 +44,7 @@ export default {
 			};
 		},
 		saveEdit() {
-			fetch(`/api/tasks/${this.task.id}`, {
+			fetch(`/api/tasks/${this.$route.params.id}`, {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(this.form)
