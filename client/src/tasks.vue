@@ -22,6 +22,10 @@ export default {
 		};
 	},
 	methods: {
+		scheduleApplyFilters () {
+			clearTimeout(this.timeout);
+			this.timeout = setTimeout(this.applyFilters.bind(this), 200);
+		},
 		applyFilters() {
 			this.stack = [];
 			this.loadTasks();
@@ -115,6 +119,9 @@ export default {
 	},
 	mounted() {
 		this.loadTasks();
+	},
+	beforeUnmount() {
+		clearTimeout(this.timeout);
 	}
 }
 </script>
@@ -135,7 +142,7 @@ export default {
 			<div class="flex flex-col md:flex-row md:items-end gap-4 mb-4">
 				<div>
 					<label class="block text-sm text-gray-600 mb-1">Статус</label>
-					<select v-model="filterState" @change="applyFilters" class="w-full px-3 py-2 border rounded">
+					<select v-model="filterState" @change="scheduleApplyFilters" class="w-full px-3 py-2 border rounded">
 						<option value="">Все</option>
 						<option value="0">Создана</option>
 						<option value="1">В процессе</option>
@@ -145,7 +152,7 @@ export default {
 
 				<div>
 					<label class="block text-sm text-gray-600 mb-1">Тег</label>
-					<input v-model="filterTag" @input="applyFilters" type="text" class="w-full px-3 py-2 border rounded" placeholder="поиск по тегу..." />
+					<input v-model="filterTag" @input="scheduleApplyFilters" type="text" class="w-full px-3 py-2 border rounded" placeholder="поиск по тегу..." />
 				</div>
 			</div>
 
