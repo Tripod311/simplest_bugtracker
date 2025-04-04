@@ -1,0 +1,23 @@
+{
+  "name": "sbt-server",
+  "version": "1.0.0",
+  "description": "simplest bugtracker server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "js",
+    "bugtracker"
+  ],
+  "author": "Tripod ind.tripod@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "sqlite3": "^5.1.7",
+    "uuid": "^11.1.0"
+  }
+}
