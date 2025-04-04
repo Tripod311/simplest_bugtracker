@@ -164,10 +164,10 @@ class DB {
 				LEFT JOIN users ON tasks.created_by = users.id
 			`;
 
-			if (username) {
-				conditions.push(`users.name = ?`);
-				params.push(username);
-			}
+			// if (username) {
+			// 	conditions.push(`users.name = ?`);
+			// 	params.push(username);
+			// }
 
 			if (typeof state === "number") {
 				conditions.push(`tasks.state = ?`);
