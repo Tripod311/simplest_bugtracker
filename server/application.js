@@ -153,18 +153,15 @@ class Application {
 	}
 
 	getTasks(req, res) {
-		const { tag, state, last_id } = req.query;
+		const { tag, state, offset } = req.query;
 
-		let last_task_id = null;
-		if (last_id && /^[0-9a-fA-F]{32}$/.test(last_id)) {
-			last_task_id = Buffer.from(last_id, "hex");
-		}
+		if (!offset) offset = 0;
 
 		this.db.getTasks({
 			username: res.__userData.name,
 			tag,
 			state: state !== undefined ? parseInt(state) : undefined,
-			last_task_id,
+			offset,
 			limit: 20
 		}).then(tasks => {
 			// конвертируем UUID обратно в hex

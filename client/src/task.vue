@@ -3,6 +3,9 @@ import Spinner from './shared/spinner.vue'
 
 export default {
 	components: { Spinner },
+	props: {
+		doHistoryBack: Boolean
+	},
 	data() {
 		return {
 			task: null,
@@ -61,9 +64,16 @@ export default {
 			fetch(`/api/tasks/${this.task.id}`, {
 				method: 'DELETE'
 			})
-				.then(() => {
+			.then(() => {
+				if (this.$route.query.offset) {
+					this.$router.replace({
+						path: '/dashboard',
+						query: { offset: this.$route.query.offset }
+					});
+				} else {
 					this.$router.replace('/dashboard');
-				});
+				}
+			});
 		},
 		stateText(state) {
 			switch (state) {

@@ -35,6 +35,7 @@ class DB {
 					tags TEXT,
 					state INTEGER NOT NULL DEFAULT 0,
 					created_by INTEGER,
+					created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 					FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 				);`);
 
@@ -146,7 +147,7 @@ class DB {
 		});
 	}
 
-	getTasks({ username, state, tag, last_task_id, limit = 20 } = {}) {
+	getTasks({ username, state, tag, offset=0, limit = 20 } = {}) {
 		return new Promise((resolve, reject) => {
 			const conditions = [];
 			const params = [];
@@ -164,11 +165,6 @@ class DB {
 				LEFT JOIN users ON tasks.created_by = users.id
 			`;
 
-			// if (username) {
-			// 	conditions.push(`users.name = ?`);
-			// 	params.push(username);
-			// }
-
 			if (typeof state === "number") {
 				conditions.push(`tasks.state = ?`);
 				params.push(state);
@@ -179,17 +175,13 @@ class DB {
 				params.push(`%${tag}%`);
 			}
 
-			if (last_task_id) {
-				conditions.push(`tasks.id < ?`);
-				params.push(last_task_id); // должен быть Buffer (16 байт UUID)
-			}
-
 			if (conditions.length > 0) {
 				query += " WHERE " + conditions.join(" AND ");
 			}
 
-			query += " ORDER BY tasks.id DESC LIMIT ?"; // keyset-пагинация
+			query += " ORDER BY tasks.created_at DESC LIMIT ? OFFSET ?"; // keyset-пагинация
 			params.push(limit);
+			params.push(offset);
 
 			this.sqlite.all(query, params, (err, rows) => {
 				if (err) return reject(err);
@@ -219,6 +211,8 @@ class DB {
 				(err, row) => {
 					if (err) return reject(err);
 					if (!row) return reject("Task not found");
+
+					row.id = uuid.stringify(row.id).replace(/-/g, '');
 
 					resolve(row);
 				}

@@ -7,7 +7,6 @@ export default {
 		return {
 			loaded: false,
 			tasks: [],
-			lastTaskId: null,
 			canGoBack: false,
 			canGoForward: true,
 			showAddDialog: false,
@@ -18,7 +17,7 @@ export default {
 			},
 			filterState: '',
 			filterTag: '',
-			stack: [] // для сохранения id предыдущих страниц (пагинация)
+			offset: 0
 		};
 	},
 	methods: {
@@ -27,10 +26,9 @@ export default {
 			this.timeout = setTimeout(this.applyFilters.bind(this), 200);
 		},
 		applyFilters() {
-			this.stack = [];
 			this.loadTasks();
 		},
-		loadTasks(lastId = null) {
+		loadTasks() {
 			this.loaded = false;
 
 			let url = '/api/tasks';
@@ -42,9 +40,7 @@ export default {
 			if (this.filterTag.trim() !== '') {
 				params.append('tag', this.filterTag.trim());
 			}
-			if (lastId) {
-				params.append('last_id', lastId);
-			}
+			params.append('offset', this.offset);
 
 			if ([...params].length > 0) {
 				url += `?${params.toString()}`;
@@ -56,6 +52,7 @@ export default {
 					if (data.error) throw new Error(data.details);
 					this.tasks = data.tasks;
 					this.canGoForward = data.tasks.length === 20;
+					this.canGoBack = this.offset > 0;
 					this.loaded = true;
 				})
 				.catch(() => {
@@ -64,19 +61,29 @@ export default {
 				});
 		},
 		openTask(id) {
-			this.$router.push(`/task/${id}`);
+			this.$router.push({
+				path: `/task/${id}`,
+				query: { offset: this.$route.query.offset }
+			});
 		},
 		nextPage() {
 			if (this.tasks.length === 0) return;
-			this.stack.push(this.tasks[0].id);
-			this.lastTaskId = this.tasks[this.tasks.length - 1].id;
-			this.loadTasks(this.lastTaskId);
+			this.offset += 20;
+			this.$router.replace({
+				path: '/dashboard',
+				query: { offset: this.offset }
+			});
+			this.loadTasks();
 			this.canGoBack = true;
 		},
 		prevPage() {
-			const last = this.stack.pop();
-			this.loadTasks(last);
-			this.canGoBack = this.stack.length > 0;
+			this.offset = Math.max(this.offset - 20, 0);
+			this.$router.replace({
+				path: '/dashboard',
+				query: { offset: this.offset }
+			});
+			this.loadTasks();
+			this.canGoBack = this.offset > 0;
 		},
 		addTask() {
 			const { title, description, tags } = this.newTask;
@@ -93,7 +100,6 @@ export default {
 				.then(res => res.json())
 				.then(() => {
 					this.newTask = { title: '', description: '', tags: '' };
-					this.stack = [];
 					this.loadTasks();
 				})
 				.catch(() => {
@@ -118,6 +124,9 @@ export default {
 		}
 	},
 	mounted() {
+		if (this.$route.query.offset) {
+			this.offset = parseInt(this.$route.query.offset);
+		}
 		this.loadTasks();
 	},
 	beforeUnmount() {
