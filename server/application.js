@@ -10,6 +10,7 @@ const uuid = require("uuid");
 
 class Application {
 	constructor(configuration) {
+		this.secure_cookies = configuration.secure_cookies;
 		this.jwt_secret = configuration.jwt_secret;
 		this.db = new DB(configuration.db_path, configuration.db_name);
 
@@ -79,7 +80,7 @@ class Application {
 				res.cookie("token", newToken, {
 					httpOnly: true,
 					signed: true,
-					secure: true,
+					secure: this.secure_cookies,
 					sameSite: "strict",
 					maxAge: 3600000
 				});
@@ -119,7 +120,7 @@ class Application {
 				res.cookie("token", newToken, {
 					httpOnly: true,
 					signed: true,
-					secure: true,
+					secure: this.secure_cookies,
 					sameSite: "strict",
 					maxAge: 3600000
 				});
@@ -141,7 +142,7 @@ class Application {
 				res.cookie("token", token, {
 					httpOnly: true,
 					signed: true,
-					secure: true,
+					secure: this.secure_cookies,
 					sameSite: 'strict',
 					maxAge: 3600000
 				});
@@ -277,7 +278,7 @@ class Application {
 		res.cookie("token", "", {
 			httpOnly: true,
 			signed: true,
-			secure: true,
+			secure: this.secure_cookies,
 			sameSite: 'strict',
 			maxAge: 3600000
 		});

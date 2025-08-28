@@ -3,5 +3,6 @@
 	"db_path": "./",
 	"db_name": "db.sqlite",
 	"cookie_secret": "secret",
-	"jwt_secret": "jwt_secret"
+	"jwt_secret": "jwt_secret",
+	"secure_cookies": false
 }
