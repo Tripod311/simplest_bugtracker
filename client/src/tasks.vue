@@ -23,7 +23,7 @@ export default {
 	methods: {
 		scheduleApplyFilters () {
 			clearTimeout(this.timeout);
-			this.timeout = setTimeout(this.applyFilters.bind(this), 200);
+			this.timeout = setTimeout(this.applyFilters.bind(this), 500);
 		},
 		applyFilters() {
 			this.loadTasks();
